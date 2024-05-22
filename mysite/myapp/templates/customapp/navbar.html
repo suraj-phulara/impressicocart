@@ -1,0 +1,76 @@
+{% load static %}
+
+<style>
+  .greet {
+    font-size: 14px;
+    color: #fff;
+    margin-right: 15px;
+  }
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-left: auto; /* Align search container to the right */
+  }
+  .search-form {
+    width: 100%; /* Ensure the form takes full width of its container */
+  }
+</style>
+<script>
+  const input = document.querySelector('input[name="q"]');
+  input.addEventListener()
+
+  
+  function autosuggest() {
+      const query = document.querySelector('input[name="q"]').value;
+      const url = `/your-backend-endpoint?q=${encodeURIComponent(query)}`;
+  
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  }
+  </script>
+  
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #049485 !important;">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+
+    <ul class="navbar-nav mr-auto" style="margin-left: -20px;">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">
+          <li class="w3-xlarge"><i class="fa fa-home"></i></li>
+        </a>
+      </li>
+      {% if request.user.customer %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'placeOrder' request.user.customer.id %}">Cart</a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+      </li>
+    </ul>
+    
+    <!-- Search form -->
+    <div class="search-container" style="padding: 9px;">
+      <form class="form-inline rounded-pill bg-light px-2 py-2 search-form" method="GET" action="{% url 'search_results' %}" style="width: 500px;"> <!-- Adjust the width as needed -->
+        <input class="form-control form-control-sm mr-sm-2 flex-grow-2" type="search" name="q" placeholder="Search" aria-label="Search" style="width: 430px; margin: 0 auto;" onchange="autosuggest()">
+        <button class="btn btn-link" type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
+
+    <div class="col-md-6">
+      <h1 style="font-size: 2rem; text-align: center; margin-top: 20px; margin-bottom: 20px; color: rgb(255, 255, 255);">ＩＭＰＲＥＳＳＩＣＯ ＣＡＲＴ</h1>
+    </div>
+ 
+    <span class="greet"> Hello, {{ request.user }}</span>
+    <span><a class="greet" href="{% url 'logout' %}">Logout</a></span>
+  </div>
+</nav>

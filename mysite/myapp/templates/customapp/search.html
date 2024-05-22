@@ -1,0 +1,196 @@
+{% extends 'customapp/dependencies.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* Add your CSS styles here */
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0');
+
+  /* Colors */
+  :root {
+    --color-primary-white: rgb(0, 0, 0);
+  }
+
+  main {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .subcategory-products,
+  .search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr)); /* Ensure 4 columns */
+    gap: 20px; /* Adjust gap between cards */
+    justify-content: center;
+    margin-top: 20px; /* Adjust margin-top */
+  }
+
+  .product-card {
+    height: 25rem; /* Adjust card height */
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 60%; /* Adjust image height to fit card */
+    object-fit: cover;
+    opacity: 0.9;
+    transition: opacity .2s ease-out;
+  }
+
+  .product-card {
+    position: relative; /* Make the product-card a relative container */
+  }
+
+  .product-card h2 {
+    position: absolute;
+    inset: auto auto 30px 30px;
+    margin: 0;
+    transition: inset .3s .3s ease-out;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 15px; /* Change the font size to your desired value */
+  }
+
+  .product-details {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    opacity: 0;
+    max-width: 80%;
+    transition: opacity .3s ease-out;
+    
+    
+  }
+
+  .product-details p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    display: block;
+  }
+
+  .product-details a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-card:hover h2 {
+    inset: auto auto 220px 30px;
+    transition: inset .3s ease-out;
+  }
+
+  .product-card:hover .product-details {
+    opacity: 1;
+    transition: opacity .5s .1s ease-in;
+  }
+
+  .product-card:hover img {
+    transition: opacity .3s ease-in;
+    opacity: 1;
+  }
+
+  .star-rating {
+            unicode-bidi: bidi-override;
+            color: #c5c5c5;
+            font-size: 20px;
+            display: inline-block;
+            position: relative;
+            padding: 10;
+            margin-left: 80;
+        }
+        .star-rating span.star {
+            color: #ffd700;
+            display: inline-block;
+            position: relative;
+            padding-right: 10;
+        }
+        .star-rating span.star:before {
+            content: "★";
+            position: relative;
+            z-index: 2;
+        }
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color:#049485; /* Set text color to black */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+  .title-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.title-container p {
+  margin: 0; 
+
+
+}
+</style>
+<div class="title-container">
+    <p style="font-weight: bold; font-size: 2rem; margin-left: 20px;">Search Results</p>
+    <p style="font-size: 0.8rem;  margin-left: 20px;">Price and other details may vary based on product size and colour.</p>
+  </div>
+  
+
+<div id="results" class="search-results">
+  {% if results %}
+    {% for result in results %}
+      <div class="product-card">
+        <h2>{{ result.name }}</h2>
+        <div class="product-details">
+          <p style="margin-left: 110px;">$<s>{{ result.actual_price }}</s></p>
+          <p style="font-size: 24px; font-weight: bold; text-align: center; margin-left: 5px;">${{ result.discount_price }}</p>
+          <div class="star-rating" data-rating="${{ product.ratings }}">
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+          </div>
+          <p style="margin-left: 100px;">{{ result.no_of_ratings }} ratings</p>
+          <p style="margin-left: 60px;"><a href="{{ result.link }}" target="_blank" class="button">View on Amazon</a></p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let starRatings = document.querySelectorAll('.star-rating');
+    starRatings.forEach(function(starRating) {
+      let ratingValue = parseFloat(starRating.getAttribute('data-rating'));
+      let stars = starRating.querySelectorAll('.star');
+      let filledStars = Math.floor(ratingValue); // Full stars
+      let percentageFilled = (ratingValue - filledStars) * 100; // Percentage of the partially filled star
+      stars.forEach(function(star, index) {
+        if (index < filledStars) {
+          star.style.width = '100%';
+        } else if (index === filledStars && percentageFilled > 0) {
+          star.style.width = percentageFilled + '%';
+        } else {
+          star.style.width = '0%';
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}
